@@ -1,3 +1,5 @@
+import { Pool } from "pg";
+
 export type TobjBalanceRes = {
   status: boolean;
   new_balance: number;
@@ -10,12 +12,14 @@ export type TobjHandleBalanceParams = {
     dblAmount: number;
     strMethod: "DEDUCT" | "TOPUP";
   };
+  objConnection:Pool
 };
 
 export type TobjGetBalanceUsecaseParams = {
   objBody: {
     strUserId: string;
   };
+  objConnection:Pool
 };
 
 export type TobjQueries = {

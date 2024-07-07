@@ -11,12 +11,12 @@ export const objQueries:TobjQueries = {
     strTopupBalance: ` 
     UPDATE tbl_user tu 
     SET ft_balance = ft_balance + $2,
-    vchr_transaction_id = gen_random_uuid()
+    vchr_transaction_id = $3
     WHERE pk_bint_user_id = $1 RETURNING ft_balance AS "balance", vchr_transaction_id AS "transaction_id"; `,
     strDeductBalance: ` 
     UPDATE tbl_user tu 
     SET ft_balance = ft_balance - $2,
-    vchr_transaction_id = gen_random_uuid()
+    vchr_transaction_id = $3
     WHERE pk_bint_user_id = $1 AND ft_balance >= $2 
     RETURNING ft_balance AS "balance", vchr_transaction_id AS "transaction_id";
     `,

@@ -17,23 +17,22 @@ const client = new objWalletPackage.WalletService(
 );
 const errFunc = (err) => console.error(`Error: ${err?.message}`);
 
+client.Topup({ user_id: "2", amount: 10 }, (err, res) => {
+  console.log(err);
 
-  client.Topup({ user_id: "1", amount: 10 }, (err, res) => {
-    console.log(err);
+  console.log(`Topup dataFrom Server : ${JSON.stringify(res)}`);
+});
 
-    console.log(`dataFrom Server : ${JSON.stringify(res)}`);
-  });
-  client.Deduct({ user_id: "1", amount: 5 }, (err, res) => {
-    console.log(err);
+client.Deduct({ user_id: "2", amount: 5 }, (err, res) => {
+  console.log(err);
 
-    console.log(`dataFrom Server : ${JSON.stringify(res)}`);
-  });
-  client.GetBalance({ user_id: 1 }, (err, res) => {
-    console.log(err);
+  console.log(`Deduct dataFrom Server : ${JSON.stringify(res)}`);
+});
+client.GetBalance({ user_id: "2" }, (err, res) => {
+  console.log(err);
 
-    console.log(`dataFrom Server : ${JSON.stringify(res)}`);
-  });
-
+  console.log(`GetBalance dataFrom Server : ${JSON.stringify(res)}`);
+});
 
 // stream expample
 // for (let i = 0; i < 100; i++) {

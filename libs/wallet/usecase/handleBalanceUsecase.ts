@@ -1,15 +1,23 @@
-import { createPgConnection } from "../../config/postgres.config";
 import { objQueries } from "../persistance";
 import {
   TobjBalanceRes,
   TobjHandleBalanceParams,
   TobjTransactionRes,
 } from "../wallet.model";
+const crypto = require("crypto");
+
+
+
 
 export async function handleBalanceUsecase({
   objBody: { dblAmount, strMethod, strUserId },
+  objConnection
 }: TobjHandleBalanceParams): Promise<TobjBalanceRes> {
-  const objConnection = await createPgConnection();
+  console.time('client');
+  
+  // const objConnection = await createPgConnection();
+  console.timeEnd('client');
+
   try {
     
     if (!strUserId) throw new Error("USER_ID_MISSING");
@@ -18,17 +26,20 @@ export async function handleBalanceUsecase({
     const strQuerySelector =
       strMethod === "TOPUP" ? "strTopupBalance" : "strDeductBalance";
 
-    await objConnection.query("BEGIN");
+    // await objConnection.query("BEGIN");
+    console.time('TobjTransactionRes')
     const { rows }: TobjTransactionRes = await objConnection.query(
       objQueries["objUpdate"][strQuerySelector],
-      [ strUserId,Number(dblAmount)]
+      [ strUserId,Number(dblAmount),crypto.randomUUID()]
     );
+    console.timeEnd('TobjTransactionRes')
+
 
 
     if (strMethod === "DEDUCT" && !rows.length)
       throw new Error("INSUFFICIENT_BALANCE_TO_DEDUCT");
 
-    await objConnection.query("COMMIT");
+    // await objConnection.query("COMMIT");
 
     return {
       status: true,
@@ -36,9 +47,9 @@ export async function handleBalanceUsecase({
       transaction_id: rows[0]["transaction_id"],
     };
   } catch (err) {
-    await objConnection.query("ROLLBACK");
+    // await objConnection.query("ROLLBACK");
     throw new Error(err);
   } finally {
-    await objConnection.end();
+    //  objConnection.release();
   }
 }

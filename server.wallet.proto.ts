@@ -10,9 +10,10 @@ import { loadSync } from "@grpc/proto-loader";
 import { TobjBalanceRes } from "./libs/wallet/wallet.model";
 import { TobjTopup } from "./routes/index.router";
 import { getBalanceUsecase, handleBalanceUsecase } from "./libs/wallet/usecase";
+import { createPgConnection } from "./libs/config/postgres.config";
 // loading proto file
 const objPackageDef = loadSync("wallet.proto", { keepCase: true });
-
+const objConnection =  createPgConnection(); 
 // creating package definition
 const objWalletGrpc = loadPackageDefinition(objPackageDef);
 
@@ -26,6 +27,7 @@ server.addService(objWalletPackage.WalletService.service, {
   Deduct,
   GetBalance,
 });
+
 server.bindAsync(
   "0.0.0.0:" + WALLET_PORT,
   ServerCredentials.createInsecure(),
@@ -41,6 +43,7 @@ async function Topup(
   callback: sendUnaryData<TobjBalanceRes>
 ) {
   try {
+console.time('TobjTopup');
 
     const { amount, user_id } = call.request;
     const objTransactionData = await handleBalanceUsecase({
@@ -49,7 +52,10 @@ async function Topup(
         strMethod: "TOPUP",
         strUserId: user_id,
       },
+      objConnection
     });
+console.timeEnd('TobjTopup');
+
     callback(null, objTransactionData);
     // call.write(objTransactionData);
     // call.end();
@@ -71,6 +77,7 @@ async function Deduct(
         strMethod: "DEDUCT",
         strUserId: user_id,
       },
+      objConnection
     });
      callback(null, objTransactionData);
     // call.write(objTransactionData);
@@ -89,6 +96,7 @@ async function GetBalance(
     const { user_id } = call.request;
     const objBalance = await getBalanceUsecase({
       objBody: { strUserId: user_id },
+      objConnection
     });
     callback(null, objBalance);
     // call.write(objBalance);
