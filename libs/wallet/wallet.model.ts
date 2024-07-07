@@ -1,8 +1,8 @@
-export type TobjBalanceRes = Promise<{
+export type TobjBalanceRes = {
   status: boolean;
   new_balance: number;
   transaction_id: string;
-}>;
+}
 
 export type TobjHandleBalanceParams = {
   objBody: {

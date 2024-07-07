@@ -31,8 +31,8 @@ export async function handleBalanceUsecase({
     await objConnection.query("COMMIT");
 
     return {
-      new_balance: rows[0]["balance"],
       status: true,
+      new_balance: rows[0]["balance"],
       transaction_id: rows[0]["transaction_id"],
     };
   } catch (err) {

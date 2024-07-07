@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package walletPackage;
+
+service WalletService {
+    rpc Topup(TransactionParams) returns(TransactionResponse);
+    rpc Deduct(TransactionParams) returns(TransactionResponse);
+    rpc GetBalance(GetBalanceParams) returns(GetBalanceRes);
+    }
+
+message TransactionParams {
+    string user_id=1;
+    float amount=2;
+}
+
+message TransactionResponse{
+    bool status = 1;
+    float  new_balance = 2;
+    string transaction_id = 3;
+}
+
+message GetBalanceParams {
+    string user_id = 1;
+}
+message GetBalanceRes {
+    float balance = 1;
+}

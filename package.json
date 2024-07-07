@@ -6,12 +6,21 @@
   "scripts": {
     "start": "nodemon --exec node -r ts-node/register --env-file=.env server.ts",
     "build": "tsc && node --env-file='.env' build/server.js",
-    "buildRender": "tsc && node build/server.js"
+    "startProtoServer": "nodemon --exec node -r ts-node/register --env-file=.env serverProto.ts",
+    "buildProtoServer": "tsc && node --env-file='.env' build/serverProto.js",
+    "startProtoClient": "nodemon --exec node -r ts-node/register --env-file=.env clientProto.ts",
+    "buildProtoClient": "tsc && node --env-file='.env' build/clientProto.js",
+    "dev-walletRpc": "nodemon --exec node -r ts-node/register --env-file=.env server.wallet.proto.ts",
+    "build-walletRpc": "tsc && node --env-file='.env' build/server.wallet.proto.js",
+    "dev-clientWalletRpc": "nodemon --exec node -r ts-node/register --env-file=.env client.wallet.proto.ts",
+    "build-clientWalletRpc": "tsc && node --env-file='.env' build/client.wallet.proto.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@grpc/grpc-js": "^1.10.10",
+    "@grpc/proto-loader": "^0.7.13",
     "express": "^4.19.2",
     "pg": "^8.12.0"
   },
