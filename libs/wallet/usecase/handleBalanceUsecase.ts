@@ -11,7 +11,7 @@ export async function handleBalanceUsecase({
 }: TobjHandleBalanceParams): Promise<TobjBalanceRes> {
   const objConnection = await createPgConnection();
   try {
-    console.log({ dblAmount, strMethod, strUserId });
+    
     if (!strUserId) throw new Error("USER_ID_MISSING");
     if (!Number(dblAmount)) throw new Error("AMOUNT_MISSING_OR_AMOUNT_ZERO");
 
@@ -23,7 +23,7 @@ export async function handleBalanceUsecase({
       objQueries["objUpdate"][strQuerySelector],
       [ strUserId,Number(dblAmount)]
     );
-    console.log(rows);
+
 
     if (strMethod === "DEDUCT" && !rows.length)
       throw new Error("INSUFFICIENT_BALANCE_TO_DEDUCT");

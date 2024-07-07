@@ -2,6 +2,7 @@ import {
   Server,
   ServerCredentials,
   ServerUnaryCall,
+  ServerWritableStream,
   loadPackageDefinition,
   sendUnaryData,
 } from "@grpc/grpc-js";
@@ -10,7 +11,7 @@ import { TobjBalanceRes } from "./libs/wallet/wallet.model";
 import { TobjTopup } from "./routes/index.router";
 import { getBalanceUsecase, handleBalanceUsecase } from "./libs/wallet/usecase";
 // loading proto file
-const objPackageDef = loadSync("wallet.proto", {keepCase:true});
+const objPackageDef = loadSync("wallet.proto", { keepCase: true });
 
 // creating package definition
 const objWalletGrpc = loadPackageDefinition(objPackageDef);
@@ -35,11 +36,12 @@ server.bindAsync(
 );
 
 async function Topup(
-  call : ServerUnaryCall<TobjTopup, TobjBalanceRes>,
+  call: ServerUnaryCall<TobjTopup, TobjBalanceRes> &
+    ServerWritableStream<TobjTopup, TobjBalanceRes>,
   callback: sendUnaryData<TobjBalanceRes>
 ) {
   try {
-    console.log(call.request,'Topup --------------');
+
     const { amount, user_id } = call.request;
     const objTransactionData = await handleBalanceUsecase({
       objBody: {
@@ -49,16 +51,19 @@ async function Topup(
       },
     });
     callback(null, objTransactionData);
+    // call.write(objTransactionData);
+    // call.end();
   } catch (err) {
     callback(err);
   }
 }
 async function Deduct(
-  call: ServerUnaryCall<TobjTopup, TobjBalanceRes>,
+  call: ServerUnaryCall<TobjTopup, TobjBalanceRes> &
+    ServerWritableStream<TobjTopup, TobjBalanceRes>,
   callback: sendUnaryData<TobjBalanceRes>
 ) {
   try {
-    console.log(call.request);
+    
     const { amount, user_id } = call.request;
     const objTransactionData = await handleBalanceUsecase({
       objBody: {
@@ -67,22 +72,27 @@ async function Deduct(
         strUserId: user_id,
       },
     });
-    callback(null, objTransactionData);
+     callback(null, objTransactionData);
+    // call.write(objTransactionData);
+    // call.end();
   } catch (err) {
     callback(err);
   }
 }
 async function GetBalance(
-  call: ServerUnaryCall<{ user_id: string }, { balance: number }>,
+  call: ServerUnaryCall<Pick<TobjTopup, "user_id">, { balance: number }> &
+    ServerWritableStream<Pick<TobjTopup, "user_id">, { balance: number }>,
   callback: sendUnaryData<{ balance: number }>
 ) {
   try {
-    console.log(call.request, "GetBalance------------");
+    
     const { user_id } = call.request;
     const objBalance = await getBalanceUsecase({
       objBody: { strUserId: user_id },
     });
     callback(null, objBalance);
+    // call.write(objBalance);
+    // call.end();
   } catch (err) {
     callback(err);
   }

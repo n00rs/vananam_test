@@ -3,9 +3,9 @@ syntax = "proto3";
 package walletPackage;
 
 service WalletService {
-    rpc Topup(TransactionParams) returns(TransactionResponse);
-    rpc Deduct(TransactionParams) returns(TransactionResponse);
-    rpc GetBalance(GetBalanceParams) returns(GetBalanceRes);
+    rpc Topup(TransactionParams) returns( TransactionResponse);
+    rpc Deduct(TransactionParams) returns( TransactionResponse);
+    rpc GetBalance(GetBalanceParams) returns( GetBalanceRes);
     }
 
 message TransactionParams {

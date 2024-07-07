@@ -15,7 +15,6 @@ export async function getBalanceUsecase({
     );
     if (!rows.length) throw new Error("INVALID_USER_ID");
 
-    console.log({ strUserId });
     return { balance: rows[0]["balance"] };
   } catch (error) {
     throw new Error(error);
